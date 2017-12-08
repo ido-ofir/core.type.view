@@ -1,10 +1,10 @@
 module.exports = {
-    name: 'core.views',
+    name: 'core.type.view',
     dependencies: [
-        'core.getDefinitionObject',
-        'core.build',
-        'core.components',
-        'core.monitor',
+        'core.plugin.get-definition-object',
+        'core.plugin.build',
+        'core.plugin.monitor',
+        'core.type.component',
     ],
     extend: {
         views: {},
@@ -75,45 +75,6 @@ module.exports = {
                 core.views[name] = view;
                 done && done(view);
             });
-
-
-            // var core = this;
-            // var {
-            //     name,
-            //     bindings,
-            //     dependencies,
-            //     template,
-            //     get,
-            //     done
-            // } = definition;
-            // if (!dependencies) dependencies = [];
-            // if (!bindings) bindings = {};
-            // return core.Component({
-            //     name: name,
-            //     dependencies: dependencies,
-            //     get(modules) {
-            //         modules = [].slice.call(arguments);
-            //         var Component = core.createComponent(name, get.apply(this, modules));
-            //         return {
-            //             render() {
-
-            //                 return core.bind(bindings, (state) => {
-
-            //                     var props = core.assign({}, this.props, state);
-            //                     return core.createElement({
-            //                         type: Component,
-            //                         props: props,
-            //                         children: props.children
-            //                     });
-            //                 });
-            //             }
-            //         };
-            //     },
-            //     done(view){
-            //         core.views[name] = view;
-            //         if (done) done(view);
-            //     }
-            // });
         }
     }]
 };
