@@ -1,9 +1,8 @@
 module.exports = {
     name: 'core.type.view',
     dependencies: [
-        'core.plugin.get-definition-object',
-        'core.plugin.build',
-        'core.plugin.monitor',
+        'core.plugin.type',
+        'core.loader.types',
         'core.type.component',
     ],
     extend: {
@@ -61,6 +60,7 @@ module.exports = {
                                 var props = core.assign({}, this.props, state);
                                 core.monitor('views.render', { name: name, props: props })
                                 return core.createElement({
+                                    ref(el){ this.element = el },
                                     type: Component,
                                     props: props,
                                     children: props.children
