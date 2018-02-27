@@ -8,7 +8,9 @@ module.exports = {
     extend: {
         views: {},
         View(name, dependencies, get, done) {
-            
+            if(Array.isArray(name)){
+                return name.map(this.View);
+            }
             var definition = this.getDefinitionObject(name, dependencies, get, 'view', done);
             // console.debug('view', definition);
             return this.build(definition, definition.done);
@@ -41,40 +43,69 @@ module.exports = {
                 ofType: 'array'
             }
         ],
-        build(definition, _super, done) {
+        build(definition, done) {
 
             var core = this;
 
-            var { name, dependencies, get, bindings } = definition; 
+            var { name, dependencies, get, bindings } = definition;
 
-            _super({
-                name: name,
-                dependencies: dependencies,
-                get(modules) {
-                    modules = [].slice.call(arguments);
-                    var Component = core.createComponent(name, get.apply(this, modules));
-                    var View = core.createComponent(name, {
-                        render() {
+            core.Module(name, dependencies, function(modules){
 
-                            return core.bind(bindings, (state) => {
-                                var props = core.assign({}, this.props, state);
-                                core.monitor('views.render', { name: name, props: props })
-                                return core.createElement({
-                                    ref(el){ this.element = el },
-                                    type: Component,
-                                    props: props,
-                                    children: props.children
-                                });
+                modules = [].slice.call(arguments);
+                var Component = core.createComponent(name + '.element', get.apply(core, modules));
+                var View = core.createComponent(name, {
+                    render() {
+
+                        return core.bind(bindings, (state) => {
+                            var props = core.assign({}, this.props, state);
+                            core.monitor('views.render', { name: name, props: props })
+                            return core.createElement({
+                                ref(el){ this.element = el },
+                                type: Component,
+                                props: props,
+                                children: props.children
                             });
-                        }
-                    });
-                    return View;
-                }
-            }, (view) => {
+                        });
+                    }
+                });
+                return View;
+
+            }, function(view){
+
                 core.components[name] = view;
                 core.views[name] = view;
                 done && done(view);
-            });
+                
+            })
+
+            // _super({
+            //     name: name,
+            //     dependencies: dependencies,
+            //     get(modules) {
+            //         modules = [].slice.call(arguments);
+            //         var Component = core.createComponent(name, get.apply(this, modules));
+            //         var View = core.createComponent(name, {
+            //             render() {
+
+            //                 return core.bind(bindings, (state) => {
+            //                     var props = core.assign({}, this.props, state);
+            //                     core.monitor('views.render', { name: name, props: props })
+            //                     return core.createElement({
+            //                         ref(el){ this.element = el },
+            //                         type: Component,
+            //                         props: props,
+            //                         children: props.children
+            //                     });
+            //                 });
+            //             }
+            //         });
+            //         return View;
+            //     }
+            // }, (view) => {
+            //     core.components[name] = view;
+            //     core.views[name] = view;
+            //     done && done(view);
+            // });
         }
     }]
 };
