@@ -12,8 +12,15 @@ module.exports = {
                 return name.map(this.View);
             }
             var definition = this.getDefinitionObject(name, dependencies, get, 'view', done);
-            // console.debug('view', definition);
-            return this.build(definition, definition.done);
+            
+            var source = this.type.toSource({
+                id: definition.name,
+                key: definition.name,
+                type: 'view',
+                description: definition.description || '',
+              }, definition);
+        
+            return this.build(source, definition.done);
         },
     },
     types: [{
