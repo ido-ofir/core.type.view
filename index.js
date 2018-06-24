@@ -11,7 +11,7 @@ module.exports = {
             if(Array.isArray(name)){
                 return name.map(this.View);
             }
-            var definition = this.getDefinitionObject(name, dependencies, get, 'view', done);
+            var definition = this.type.getDefinitionObject(name, dependencies, get, 'view', done);
             
             var source = this.type.toSource({
                 id: definition.name,
@@ -83,36 +83,7 @@ module.exports = {
                 core.views[name] = view;
                 done && done(view);
                 
-            })
-
-            // _super({
-            //     name: name,
-            //     dependencies: dependencies,
-            //     get(modules) {
-            //         modules = [].slice.call(arguments);
-            //         var Component = core.createComponent(name, get.apply(this, modules));
-            //         var View = core.createComponent(name, {
-            //             render() {
-
-            //                 return core.bind(bindings, (state) => {
-            //                     var props = core.assign({}, this.props, state);
-            //                     core.monitor('views.render', { name: name, props: props })
-            //                     return core.createElement({
-            //                         ref(el){ this.element = el },
-            //                         type: Component,
-            //                         props: props,
-            //                         children: props.children
-            //                     });
-            //                 });
-            //             }
-            //         });
-            //         return View;
-            //     }
-            // }, (view) => {
-            //     core.components[name] = view;
-            //     core.views[name] = view;
-            //     done && done(view);
-            // });
+            });
         }
     }]
 };
